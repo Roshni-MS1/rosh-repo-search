@@ -55,7 +55,7 @@ def generate_embeddings(text):
         input=text, model="text-embedding-ada-002"
     )["data"][0]["embedding"]
 
-    len(embedding)
+ #   len(embedding)
 
 if __name__ == '__main__':
     app.run()
