@@ -50,6 +50,13 @@ Names:""".format(
     )
 
 
+def generate_embeddings(text):
+    return openai.Embedding.create(
+        input=text, model="text-embedding-ada-002"
+    )["data"][0]["embedding"]
+
+    len(embedding)
+
 if __name__ == '__main__':
     app.run()
 
