@@ -31,12 +31,12 @@
             <!input type="text" id="user_input" name="user_input" style="txtbox">
             <!input type="text" id="user_input" name="user_input" style="font-size:10pt;color:blueviolet;height:50px;width:800px;">
             <input type="text" id="txtbox" name="user_input" value="{{ input }}"><br><br>&ensp;
-            <label for="vehicle1" style="margin-left: 10%">My User ID</label>
-            <input type="text" name="user_input" value="" >
-            <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" style="margin-left: 5%">
-            <label for="vehicle1"> Enforce Purview Policy</label>
-            <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" style="margin-left: 5%">
-            <label for="vehicle1"> Strict </label><br>
+            <label for="puser_id" style="margin-left: 10%">My User ID</label>
+            <input type="text" name="puser_id" value="" >
+            <input type="checkbox" id="ppolicy" name="ppolicy" value="Bike" style="margin-left: 5%">
+            <label for="ppolicy"> Enforce Purview Policy</label>
+            <input type="checkbox" id="pstrict" name="pstrict" value="Bike" style="margin-left: 5%">
+            <label for="pstrict"> Strict </label><br>
             {% if input == null %}
             <input type="submit" style="color:blue; margin-left: 45%;width: 125px" value="Submit"><br><br>
             {% endif %}
