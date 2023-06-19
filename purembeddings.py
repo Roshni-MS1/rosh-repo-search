@@ -1,23 +1,23 @@
 from langchain.document_loaders import ReadTheDocsLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 import tiktoken
 from uuid import uuid4
 from tqdm.auto import tqdm
 import openai
+import purconfig
 
 
-    tokenizer = tiktoken.get_encoding('p50k_base')
 
-    # create the length function
-    def tiktoken_len(text):
-        tokens = tokenizer.encode(
-            text,
-            disallowed_special=()
-        )
-        return len(tokens)
+# create the length function
+def tiktoken_len(text):
+    tokens = tokenizer.encode(
+        text,
+        disallowed_special=()
+    )
+    return len(tokens)
      
 
-    from langchain.text_splitter import RecursiveCharacterTextSplitter
-
+def configureTextSplitter():
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=400,
         chunk_overlap=20,
@@ -25,6 +25,7 @@ import openai
         separators=["\n\n", "\n", " ", ""]
     )
 
+def splitContentsIntoChunks():
     chunks = []
     for idx, record in enumerate(tqdm(data)):
         texts = text_splitter.split_text(record['text'])
@@ -33,17 +34,14 @@ import openai
             'text': texts[i],
             'chunk': i,
             'url': record['url']
-        } for i in range(len(texts))])
+        } for i in range(len(texts))])  
 
-   
-    # create the embeddings
-    # initialize openai API key
-    openai.api_key = "sk-..."  #platform.openai.com
 
-    embed_model = "text-embedding-ada-002"
 
     #In the response below res we will find a JSON-like object containing our new embeddings within the 'data' field.
     #res includes ['object', 'data', 'model', 'usage']
+def purcreateembeddings(chunks):
+    #limit input to 8k tokens
     res = openai.Embedding.create(
         input=[
             "Sample document text goes here",

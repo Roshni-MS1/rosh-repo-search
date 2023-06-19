@@ -2,6 +2,7 @@ from langchain.document_loaders import ReadTheDocsLoader
     
 
 #load documents 
+def readPurviewDocs():
     loader = ReadTheDocsLoader('rtdocs')
     docs = loader.load()
     len(docs)
@@ -17,3 +18,25 @@ from langchain.document_loaders import ReadTheDocsLoader
             'url': doc.metadata['source'].replace('rtdocs/', 'https://'),
             'text': doc.page_content
         })
+
+#readopenaikey
+def readSampleDoc():
+    with open('C:\\Users\\roshnipatil\\Documents\\GitHub\\openaikey.txt', 'r') as file:
+        # Read all lines of the file
+        return file.read()
+
+#readpineconekey
+with open('C:\\Users\\roshnipatil\\Documents\\GitHub\\pineconekey.txt', 'r') as file:
+    # Read all lines of the file
+    lines = file.readlines()
+    # Print the content of the file
+    for line in lines:
+        print(line)
+
+
+#Open the file for reading
+def readSampleDoc():
+    with open('C:\\Users\\roshnipatil\\Documents\\GitHub\\textpii.txt', 'r') as file:
+        # Read all lines of the file
+        return file.read()
+        

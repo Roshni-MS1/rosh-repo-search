@@ -4,6 +4,7 @@ import datetime
 from time import sleep
 
  #pinecone initialize index
+ def purpineconeinitindex():
     index_name = 'gpt-4-langchain-docs'
 
     # initialize connection to pinecone
@@ -27,6 +28,7 @@ from time import sleep
 
 
 #Add vectors to Pinecone
+def purpineconeaddvectors(chunks):
     batch_size = 100  # how many embeddings we create and insert at once
 
     for i in tqdm(range(0, len(chunks), batch_size)):
@@ -63,7 +65,7 @@ from time import sleep
 
 
 #Retrieve vectors from Pinecone
-    query = "how do I use the LLMChain in LangChain?"
+def purpineconeretrievevectors(query):
 
     res = openai.Embedding.create(
         input=[query],
