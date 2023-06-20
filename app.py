@@ -6,19 +6,58 @@ import json
 from flask import Flask, redirect, render_template, request, url_for
 import purconfig
 import tiktoken
+from purreaddocs import *
+
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 embed_model = "text-embedding-ada-002"
 tokenizer = tiktoken.get_encoding('p50k_base')
 #tokenizer = tiktoken.get_encoding("cl100k_base")
 
+
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    
+    user1 = 'john@microsoft.com'
+    user2 = 'alice@microsoft.com'
+    user3 = 'mark@microsoft.com'
+
+    label1 = 'Confidential data'
+    label2 = 'Credit Card data'
+    label3 = 'License or credit card data'
+
+    policy1 = gen_policy( user1, label1 )
+    policy2 = gen_policy( user2, label2 )
+    policy3 = gen_policy( user3, label3 )
+
+    enterprise_data = readSampleDoc()
+
+
     if request.method == 'POST':
         user_input = request.form['user_input']
-        output = user_input.upper()
+        puser_id = request.form['puser_id']
+        print("puser_id: ", puser_id)
+        ppolicy = request.form.get('ppolicy') 
+        pstrict = request.form.get('pstrict')
+        
+        output = user_input
+        #output = generate_prompt1(user_input, enterprise_data)
+        if (puser_id == user1):
+            sencheck_prompt= generate_prompt_sensitivity_check(label1, enterprise_data)
+        elif (puser_id == user2):
+            sencheck_prompt= generate_prompt_sensitivity_check(label2, enterprise_data)
+        elif (puser_id == user3):
+            sencheck_prompt= generate_prompt_sensitivity_check(label3, enterprise_data)
+        else:
+            puser_id = 'Any'
+            sencheck_prompt= generate_prompt_sensitivity_check(label3, enterprise_data)
+        
+        writeprompttofile(output)
+        writesencheckprompttofile(sencheck_prompt)
+        writesenlistprompttofile( generate_prompt_sensitivity_list(enterprise_data) ) 
+
 
        # response = openai.Completion.create(
        #     model="text-davinci-003",
@@ -35,22 +74,25 @@ def index():
         #check new data type
         print(type(json_object))
 
-        return render_template('index.html', output=output, input=user_input, policy_object=json_object)
-    return render_template('index.html')
+        return render_template('index.html', output=output, input=user_input, policy_object=json_object, puser_id=puser_id, ppolicy=ppolicy, pstrict=pstrict, policy1 = policy1, policy2 = policy2, policy3 = policy3)
+    return render_template('index.html', policy1 = policy1, policy2 = policy2, policy3 = policy3)
 
 
 
-def generate_prompt1(animal):
-    return """Suggest three names for an animal that is a superhero.
+def generate_prompt1(user_input, enterprise_data):
+    return f""" {user_input} \nText: {enterprise_data}"""
 
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: {}
-Names:""".format(
-        animal.capitalize()
-    )
+def generate_prompt_sensitivity_check(label, enterprise_data):
+    sample_file = readSampleDoc()
+    return f"""Does the text include {label}? Output Y if yes and N if No. do not include any description \n\nText: {enterprise_data}"""
+
+def generate_prompt_sensitivity_list(enterprise_data):
+    sample_file = readSampleDoc()
+    return f"""Identify the sensitive data in the text and create a JSON with the type of sensitive data and the data value.do not include any description \n\nText: {enterprise_data}"""
+
+
+def gen_policy(user_id, label):
+    return f""" Only {user_id} must be able to access {label}"""
 
 def generate_prompt_chat(animal):
     example_messages = [
